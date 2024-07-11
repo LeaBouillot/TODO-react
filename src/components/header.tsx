@@ -1,31 +1,39 @@
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import "../styles/header.css";
 import { useState } from "react";
-import logoUrl from "../assets/Logo.jpg";
+import logoUrl from "../assets/Logo.svg";
 
+//Typage des Props
 interface HeaderProps {
   onAddTask: (taskTitle: string) => void;
 }
 
 export function Header({ onAddTask }: HeaderProps) {
   const [title, setTitle] = useState("");
-  //FormEvent<HTMLFormElement> will give an array list as HTMLFormControlsCollection
-  function handleSumit(e: React.FormEvent<HTMLFormElement>) {
+
+  //Gestion du submit du formulaire
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     onAddTask(title);
-    setTitle(""); // reset input après submit
+    setTitle("");
+  }
+
+  //Gestion de la saisie du titre
+  function onChangeTitle(e: React.ChangeEvent<HTMLInputElement>) {
+    setTitle(e.target.value);
   }
 
   return (
-    <header>
+    <header className="header">
       <img src={logoUrl} alt="todo logo" />
 
-      <form className="newTaskorm" onSubmit={handleSumit}>
+      <form className="newTaskForm" onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Ajouter une tâche"
+          placeholder="Add a task"
           value={title}
-          onChange={(e) => setTitle(e.target.value)} //onChangeTitle
+          onChange={onChangeTitle}
         />
         <button>
           Add

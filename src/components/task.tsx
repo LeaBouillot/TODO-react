@@ -1,8 +1,8 @@
 import { TbTrash } from "react-icons/tb";
-import "../styles/task.css"
-import { BsFill0CircleFill } from "react-icons/bs";
+import "../styles/task.css";
+import { BsFillCheckCircleFill } from "react-icons/bs";
 import { useState } from "react";
-import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit, FaRegSave } from "react-icons/fa";
 
 //Typage des objets Task
 interface Task {
@@ -12,7 +12,7 @@ interface Task {
   category: string;
 }
 
-//Typage de sprops
+//Typage des Props
 interface TaskProps {
   task: Task;
   onComplete: (taskId: string) => void;
@@ -20,12 +20,17 @@ interface TaskProps {
   onEdit: (taskId: string, newTitle: string) => void;
 }
 
-export default function Task({ task, onComplete, onDelete, onEdit}:TaskProps) {
-  // Declaration des const pour la gestion du mode d'édition
+export default function Task({
+  task,
+  onComplete,
+  onDelete,
+  onEdit,
+}: TaskProps) {
+  //Déclaration des const pour la gestion du mode d'édition
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
-  const [newTitle, setNewTitle] = useState<string>('');
+  const [newTitle, setNewTitle] = useState<string>("");
 
-  //Gestion du mode d'edition
+  //Gestion du mode d'édition
   const handleEditClick = (taskId: string, currentTitle: string) => {
     setEditingTaskId(taskId);
     setNewTitle(currentTitle);
@@ -34,36 +39,46 @@ export default function Task({ task, onComplete, onDelete, onEdit}:TaskProps) {
   const handleSaveClick = (taskId: string) => {
     onEdit(taskId, newTitle);
     setEditingTaskId(null);
-    setNewTitle('');
-  }
-  
+    setNewTitle("");
+  };
+
   return (
-    <div>
-      <button className="">
-      {task.isCompleted?  <BsFill0CircleFill/> : <div/>}  
+    <div className="task">
+      <button className="checkContainer" onClick={() => onComplete(task.id)}>
+        {task.isCompleted ? <BsFillCheckCircleFill /> : <div />}
       </button>
-      <p>{task:title}</p>
+
+      <p className={task.isCompleted ? "textCompleted" : ""}>{task.title}</p>
 
       <div key={task.id}>
         {editingTaskId !== task.id ? (
-           <> 
-          <button onClick={() => handleEditClick(task.id, task.title)}>
-            <FaRegEdit />
-          </button>
-          </>
-        ) : ( 
           <>
-          <input type="text"
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-          />
-          <button><FaRegEdit/></button>
+            <button
+              className="editButton"
+              onClick={() => handleEditClick(task.id, task.title)}
+            >
+              <FaRegEdit size={22} />
+            </button>
+          </>
+        ) : (
+          <>
+            <input
+              type="text"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+            />
+            <button
+              className="editButton"
+              onClick={() => handleSaveClick(task.id)}
+            >
+              <FaRegSave size={22} />
+            </button>
           </>
         )}
       </div>
-      <button>
-        <TbTrash onClick={() => onDelete(task.id)} />
+      <button className="deleteButton" onClick={() => onDelete(task.id)}>
+        <TbTrash size={22} />
       </button>
     </div>
-  )
-};
+  );
+}

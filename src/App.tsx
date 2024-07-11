@@ -1,19 +1,13 @@
 import { useEffect, useState } from "react";
 import { Header } from "./components/header";
 import Tasks from "./components/tasks";
-import SelectForm from "./components/selectForm";
+import { SelectForm } from "./components/selectForm";
 import { TbTrash } from "react-icons/tb";
 import "./styles/global.css";
 
-// const LOCAL_STORAGE_USERS_KEY = "users";
 const LOCAL_STORAGE_KEY = "todo:savedTasks";
 const LOCAL_STORAGE_KEY_CATE = "todo:savedCate";
 
-// interface User {
-//   id: string;
-//   username: string;
-//   tasks: Task[];
-// }
 interface Task {
   id: string;
   title: string;
@@ -22,37 +16,32 @@ interface Task {
 }
 
 function App() {
-  //-------------------------------------------------------------------------------------
-  //GESTION DES UTILISATEURS
-
-  //   const [users, setUsers] = useState<User[]>([]);
-  //   const [currentUsername, setCurrentUsername] = useState<string>("");
-  //   const [currentUserId, setCurrentUserId] = useState<string>("");
   //--------------------------------------------------------------------------------------
   //GESTION DES TASKS
   //--------------------------------------------------------------------------------------
 
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  //Chager les taches dans le local storage au chargement de la page
+  //Charger les tâches dans le local Storageau chargement de la page
   function loadSavedTasks() {
     const savedTasks = localStorage.getItem(LOCAL_STORAGE_KEY);
     console.log(savedTasks);
     if (savedTasks) {
-      setTasks(JSON.parse(savedTasks)); //converti en JSON string pr LocalStorage
+      setTasks(JSON.parse(savedTasks));
     }
   }
+
   useEffect(() => {
     loadSavedTasks();
-  }, []); //charger une seul fois
+  }, []);
 
-  //Charger les taches dans le local storage et sauvegarder les taches
+  //Charger les tâches dans le local Storage et sauvegarder les tâches
   function setTasksandSave(newTasks: Task[]) {
     setTasks(newTasks);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newTasks));
   }
 
-  //Ajourt une tache
+  //Ajouter une tâche
   function addTask(taskTitle: string) {
     setTasksandSave([
       ...tasks,
@@ -65,16 +54,16 @@ function App() {
     ]);
   }
 
-  // Supprimer une tache
+  //Supprimer une tâche
   function deleteTask(taskId: string) {
     const newTasks = tasks.filter((task) => task.id !== taskId);
     setTasksandSave(newTasks);
   }
 
-  //modifierr le titre d'une tache
+  //Modifier le titre d'une tâche
   function editTaskTitle(taskId: string, newTitle: string) {
     const newTasks = tasks.map((task) => {
-      if (TASK.ID === taskId) {
+      if (task.id === taskId) {
         return {
           ...task,
           title: newTitle,
@@ -85,7 +74,7 @@ function App() {
     setTasksandSave(newTasks);
   }
 
-  //Modifier l'etat de completion d'une tache (true ou false)
+  //Modifier l'état de complétion d'une tâche (true ou false)
   function toggleTaskCompleted(taskId: string) {
     const newTasks = tasks.map((task) => {
       if (task.id === taskId) {
@@ -107,35 +96,50 @@ function App() {
   const [options, setOptions] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<string>("");
 
-  //Charger les categories dans le local storage
+  //Charger les catégories dans le local Storage
   function loadSavedCate() {
     const savedCate = localStorage.getItem(LOCAL_STORAGE_KEY_CATE);
+    console.log(savedCate);
     if (savedCate) {
-      setOptions(Json.parse(savedCate));
+      setOptions(JSON.parse(savedCate));
     }
   }
 
   useEffect(() => {
     loadSavedCate();
-  }, []); //charger une seul fois
+  }, []);
 
-  //Charger les categories dans le local dtorrage et sauvgarder les categories
+  //Charger les catégories dans le local Storage et sauvegarder les catégories
   function setOptionsandSave(newOptions: string[]) {
     setOptions(newOptions);
     localStorage.setItem(LOCAL_STORAGE_KEY_CATE, JSON.stringify(newOptions));
   }
 
-  // Gestion des options de categorie
-  const [choise, setChoice] = useState<string>("All");
+  //Gestion des options de catégories
+  const handleOptionsChange = (newOptions: string[]) => {
+    setOptionsandSave(newOptions);
+  };
 
-  //suppression de categorie
+  //Gestion de la selection de la catégorie
+  const handleSelectedOptionChange = (option: string) => {
+    setSelectedOption(option);
+  };
+
+  const [choice, setChoice] = useState<string>("All");
+
+  //Suppression d'une catégorie
   function deleteCate(cate: string) {
-    if (window.confirm(`Êtes-vous vouloir supprimer la catégorie ${cate} ?`)) {
+    if (
+      window.confirm(
+        `Êtes-vous sûr de vouloir supprimer la catégorie ${cate} ?`
+      )
+    ) {
       const newOptions = options.filter((option) => option !== cate);
       setOptionsandSave(newOptions);
       loadSavedTasks();
     }
   }
+
   //--------------------------------------------------------------------------------------
   //AFFICHAGE DE LA PAGE
   //--------------------------------------------------------------------------------------
